@@ -15,6 +15,8 @@ Important: keep `data/` folder (users/shifts/companies JSON files) on the server
 npm install
 ```
 
+Note: The project now uses a lightweight SQLite database (`data/teamshifter.db`). If you previously used JSON files, the server will attempt to import `data/companies.json`, `data/users.json`, and `data/shifts.json` into the database on first run.
+
 3. Start the server:
 
 ```powershell
