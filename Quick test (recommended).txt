@@ -1,0 +1,9 @@
+Quick test (recommended)
+
+Start the Node server.
+Open the app in the browser.
+Click Log In and sign in using default manager:
+Username: admin
+Password: admin
+As manager, use Roster to add employees (these will be stored on the server).
+Add shifts and confirm they persist (check shifts.json or open a second browser or machine and open the app and log in — shifts should be visible).

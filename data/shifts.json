@@ -1,0 +1,22 @@
+[
+  {
+    "id": "s_mib3wblv_kea7p7",
+    "employee": "Test 1",
+    "role": "",
+    "start": "09:00",
+    "end": "17:00",
+    "color": "#2f8bf7",
+    "date": "2025-11-23",
+    "company": null
+  },
+  {
+    "id": "s_mib3wq4q_0m20wz",
+    "employee": "Test 2",
+    "role": "",
+    "start": "09:00",
+    "end": "16:00",
+    "color": "#30eaf8",
+    "date": "2025-11-23",
+    "company": null
+  }
+]

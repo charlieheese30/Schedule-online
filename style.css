@@ -1,0 +1,28 @@
+*{box-sizing:border-box;font-family:Segoe UI,Roboto,Arial,sans-serif}
+body{margin:0;background:#f4f6f8;color:#111}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;border-bottom:1px solid #e2e6ea}
+.app-header h1{margin:0;font-size:1.1rem}
+.controls{display:flex;gap:8px;align-items:center}
+.controls button{padding:8px 10px;border-radius:6px;border:1px solid #d0d6db;background:#fff;cursor:pointer}
+.controls button:hover{filter:brightness(.98)}
+.auth-area{display:flex;gap:8px;align-items:center;margin-left:8px}
+.current-user{font-size:.9rem;color:#333}
+.week-label{font-weight:600;padding:0 8px}
+.schedule-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:16px}
+.day-column{background:#fff;border:1px solid #e6eaee;border-radius:6px;padding:8px;min-height:140px;display:flex;flex-direction:column}
+.day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:600}
+.day-date{font-size:.85rem;color:#666}
+.shift-list{display:flex;flex-direction:column;gap:6px}
+.shift-card{padding:8px;border-radius:6px;color:#fff;cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.05)}
+.shift-time{font-size:.85rem;opacity:.95}
+.shift-employee{font-weight:700}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+.modal.hidden{display:none}
+.modal-content{background:#fff;padding:16px;border-radius:8px;min-width:320px;max-width:420px}
+.modal-content label{display:block;margin:8px 0}
+.modal-content input, .modal-content select{width:100%;padding:8px;margin-top:4px;border:1px solid #dbe2e8;border-radius:6px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+button.danger{background:#ffecec;border-color:#ffb3b3}
+.hidden{display:none}
+@media (max-width:800px){.schedule-grid{grid-template-columns:repeat(1,1fr)}.controls{flex-wrap:wrap}}
+@media print{.controls, .modal{display:none}body{background:#fff} .day-column{border:0}}

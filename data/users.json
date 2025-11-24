@@ -1,0 +1,22 @@
+[
+  {
+    "username": "admin",
+    "password": "$2a$10$b8pWKgMCcYI1PNgW.En/6eKWKjM7hgeQEh/hD80sgcmWprDUkfsNG",
+    "role": "manager",
+    "email": ""
+  },
+  {
+    "username": "Test 1",
+    "password": "$2a$10$cFQkPkxMUP94bC27c0/R4.doi/3nwb72CHD7Ii1S6uZkZ/GllHE3y",
+    "role": "employee",
+    "email": "",
+    "company": null
+  },
+  {
+    "username": "Test 2",
+    "password": "$2a$10$pS78RP7z9mUWG6DngtrELuwM2XxP1dfF4L7bACPbAx9aMXp.vCZvK",
+    "role": "employee",
+    "email": "",
+    "company": null
+  }
+]

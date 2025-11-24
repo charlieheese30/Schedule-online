@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TeamShifter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>TeamShifter</h1>
+    <div class="controls">
+      <button id="prevWeek" title="Previous week">◀</button>
+      <div id="weekLabel" class="week-label"></div>
+      <button id="nextWeek" title="Next week">▶</button>
+      <button id="addShiftBtn">Add Shift</button>
+      <button id="exportBtn">Export CSV</button>
+      <button id="importBtn">Import CSV</button>
+      <input id="importFile" type="file" accept=".csv" style="display:none">
+      <div id="authArea" class="auth-area">
+        <span id="currentUser" class="current-user"></span>
+        <button id="createCompanyBtn">Create Company</button>
+        <button id="loginBtn">Log In</button>
+        <button id="logoutBtn" class="hidden">Log Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="schedule" class="schedule-grid"></div>
+  </main>
+
+  <div id="shiftModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <h2 id="modalTitle">Add Shift</h2>
+      <form id="shiftForm">
+        <input type="hidden" id="shiftId">
+        <label id="employeeTextLabel">Employee name<input id="employee" required></label>
+        <label id="employeeSelectLabel" class="hidden">Employee<select id="employeeSelect"></select></label>
+        <label>Role<input id="role"></label>
+        <label>Day<select id="day"></select></label>
+        <label>Start time<input id="start" type="time" required></label>
+        <label>End time<input id="end" type="time" required></label>
+        <label>Color<input id="color" type="color" value="#2f8bf7"></label>
+        <div class="modal-actions">
+          <button type="submit">Save</button>
+          <button type="button" id="cancelBtn">Cancel</button>
+          <button type="button" id="deleteBtn" class="danger hidden">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Login modal -->
+  <div id="loginModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <h2>Log in</h2>
+      <form id="loginForm">
+        <label>Username<input id="loginUser" required></label>
+        <label>Password<input id="loginPass" type="password" required></label>
+        <div class="modal-actions">
+          <button type="submit">Log In</button>
+          <button type="button" id="loginCancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Roster / user management modal (manager only) -->
+  <div id="rosterModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <h2>Roster</h2>
+      <div id="rosterList" style="max-height:240px;overflow:auto;margin-bottom:8px"></div>
+      <form id="rosterForm">
+        <label>Name<input id="rosterName" required></label>
+        <label>Email<input id="rosterEmail" type="email"></label>
+        <label>Role<select id="rosterRole"><option value="employee">Employee</option><option value="manager">Manager</option></select></label>
+        <label>Password<input id="rosterPass" required></label>
+        <div class="modal-actions">
+          <button type="submit">Add / Update</button>
+          <button type="button" id="rosterClose">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Company registration modal -->
+  <div id="companyModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <h2>Create Company</h2>
+      <form id="companyForm">
+        <label>Company name<input id="companyName" required></label>
+        <label>Owner username<input id="companyOwner" required></label>
+        <label>Owner email<input id="companyOwnerEmail" type="email"></label>
+        <label>Owner password<input id="companyOwnerPass" type="password" required></label>
+        <div class="modal-actions">
+          <button type="submit">Create</button>
+          <button type="button" id="companyCancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
