@@ -93,6 +93,29 @@ You can deploy the app as a small web service. The code is already compatible wi
 ### Railway / other hosts:
 - Railway and other simple hosts follow similar steps: push repo to GitHub, create a new project, select web service, and set start command `npm start`.
 
+### Deploying with Docker (works around native build errors)
+
+If you see build errors for `better-sqlite3` on cloud builders (native compilation errors), use the included `Dockerfile` which installs the system dependencies and compiles the native module during image build.
+
+1. Build the Docker image locally (optional test):
+
+```powershell
+docker build -t teamshifter:latest .
+```
+
+2. Run the container locally and map port 3000:
+
+```powershell
+docker run --rm -p 3000:3000 -v ${PWD}/data:/usr/src/app/data teamshifter:latest
+```
+
+3. Deploy using Render (or other hosts) with Docker:
+   - In Render create a new Web Service and select "Docker" as the Environment.
+   - Connect your GitHub repo and Render will use the `Dockerfile` in the repo to build the image.
+   - Set environment variable `SCHEDULE_JWT_SECRET` in the Render dashboard.
+
+Using Docker ensures the build environment has the necessary packages to compile `better-sqlite3` and avoids `node-gyp` errors during cloud builds.
+
 ### Heroku (if you prefer):
 - Add a `Procfile` with:
 
