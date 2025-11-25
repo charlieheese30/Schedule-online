@@ -4,11 +4,9 @@
   const USERS_KEY = 'schedule_users_v1';
   const SESSION_KEY = 'schedule_session_v1';
   const API_TOKEN_KEY = 'schedule_api_token';
-  // Use localhost:3000 as the API base by default to avoid mixed-origin issues
-  // when opening the HTML file directly. If you serve the app from another origin,
-  // set API_BASE accordingly.
-  const API_BASE = 'http://localhost:3000';
   const COMPANIES_KEY = 'schedule_companies_v1';
+  // Dynamic API_BASE: use window.location.origin on production, fallback to localhost:3000 for local dev
+  const API_BASE = window.location.origin || 'http://localhost:3000';
 
   // Elements
   const scheduleEl = document.getElementById('schedule');
@@ -61,8 +59,18 @@
   loadUsers();
   loadCompanies();
   loadSession();
+  // Require login from the home page: if no token/session present, redirect to home
+  const token = localStorage.getItem(API_TOKEN_KEY);
+  if(!session && !token){
+    // preserve hash if present
+    const h = location.hash || '';
+    window.location.replace('/' + h);
+    return;
+  }
   render();
   attach();
+  // If opened with #company, open the company modal automatically
+  if(location.hash === '#company') openCompanyModal();
 
   function attach(){
     prevWeekBtn.addEventListener('click', ()=>{ currentWeekStart = addDays(currentWeekStart,-7); render(); });
@@ -282,13 +290,16 @@
 
   // load shifts from server if available, else localStorage
   async function loadShifts(){
-    // try API
+    // try API first
     try{
-      const res = await fetch(API_BASE + '/api/shifts');
-      if(res.ok){ const data = await res.json(); shifts = data||[]; return; }
+      const token = localStorage.getItem(API_TOKEN_KEY);
+      if(token){
+        const res = await fetch(API_BASE + '/api/shifts', { headers:{ 'Authorization':'Bearer '+token }});
+        if(res.ok){ const data = await res.json(); shifts = data||[]; return; }
+      }
     }catch(e){}
-    // fallback
-    try{ const raw = localStorage.getItem(LS_KEY); shifts = raw?JSON.parse(raw):[];}catch(e){ shifts=[]; }
+    // fallback to localStorage
+    try{ const raw = localStorage.getItem(LS_KEY); shifts = raw?JSON.parse(raw):[]; }catch(e){ shifts=[]; }
   }
 
   // --- Users / auth ---
@@ -332,12 +343,7 @@
       const res = await fetch(API_BASE + '/api/companies/register', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ companyName, ownerUsername, ownerPassword: ownerPass, ownerEmail }) });
       if(!res.ok){
         const err = await res.json().catch(()=>({error:'Failed'}));
-        console.error('Company create failed', res.status, err);
-        // Attempt local fallback when server returns an error
-        console.warn('Falling back to local company creation');
-        createLocalCompany(companyName, ownerUsername, ownerPass, ownerEmail);
-        alert('Company created locally (server returned error). You are logged in as owner.');
-        return;
+        return alert('Company registration failed: ' + (err.error || 'Server error'));
       }
       const data = await res.json();
       localStorage.setItem(API_TOKEN_KEY, data.token);
@@ -347,12 +353,10 @@
       await loadUsersFromApi();
       await loadShifts();
       render();
-      alert('Company created and logged in');
+      alert('Company created and logged in!');
     }catch(err){
       console.error('Create company exception', err);
-      // network/server unreachable -> fallback to local company creation
-      createLocalCompany(companyName, ownerUsername, ownerPass, ownerEmail);
-      alert('Company created locally (server unreachable). You are logged in as owner.');
+      alert('Company registration failed: ' + (err.message || 'Network error'));
     }
   }
 
@@ -401,7 +405,6 @@
     const actions = document.createElement('div'); const del = document.createElement('button'); del.textContent='Delete'; del.addEventListener('click', ()=>{ if(u.username==='admin') return alert('Cannot delete default admin'); if(!confirm('Delete user '+u.username+'?'))return; users = users.filter(x=>x.username!==u.username); saveUsers(); populateRosterList(); });
     actions.appendChild(del); row.appendChild(actions); rosterList.appendChild(row);
   }); }
-  function onRosterSubmit(e){ e.preventDefault(); const name=document.getElementById('rosterName').value.trim(); const email=document.getElementById('rosterEmail').value.trim(); const role=document.getElementById('rosterRole').value; const pass=document.getElementById('rosterPass').value; if(!name||!pass) return alert('Name and password required'); const existing = users.find(u=>u.username===name); if(existing){ existing.email=email; existing.role=role; existing.password=pass; } else { users.push({username:name,password:pass,role:role,email:email}); } saveUsers(); populateRosterList(); rosterForm.reset(); populateEmployeeSelect(); alert('Saved'); }
   async function onRosterSubmit(e){ e.preventDefault(); const name=document.getElementById('rosterName').value.trim(); const email=document.getElementById('rosterEmail').value.trim(); const role=document.getElementById('rosterRole').value; const pass=document.getElementById('rosterPass').value; if(!name||!pass) return alert('Name and password required'); // prefer API
     const token = localStorage.getItem(API_TOKEN_KEY);
     if(token){

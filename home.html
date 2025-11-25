@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TeamShifter — Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>TeamShifter</h1>
+    <div class="controls">
+      <div class="week-label">Schedule made simple</div>
+    </div>
+  </header>
+
+  <main style="max-width:960px;margin:40px auto;display:flex;gap:32px;align-items:center;justify-content:space-between;">
+    <section style="flex:1">
+      <h2 style="color:var(--accent-900);font-size:2rem;margin:0 0 12px">Welcome to TeamShifter</h2>
+      <p style="color:var(--muted);font-size:1.05rem;line-height:1.4">Create and share employee schedules quickly. Managers can create companies, add staff and publish shifts — employees can view their weekly roster.</p>
+      <ul style="margin-top:16px;color:var(--muted)">
+        <li>Secure login for managers and employees</li>
+        <li>Company-scoped schedules</li>
+        <li>CSV import / export and print-friendly views</li>
+      </ul>
+      <div style="margin-top:18px">
+        <a href="/app" class="controls" style="text-decoration:none"><button class="primary">Open App (requires login)</button></a>
+      </div>
+    </section>
+
+    <aside style="width:360px;background:var(--surface);padding:18px;border-radius:12px;box-shadow:0 12px 30px rgba(8,57,32,0.06)">
+      <h3 style="margin:0 0 8px;color:var(--accent-900)">Log in to TeamShifter</h3>
+      <form id="homeLogin" style="margin-top:8px">
+        <label>Username<input id="homeUser" required></label>
+        <label>Password<input id="homePass" type="password" required></label>
+        <div style="display:flex;gap:10px;margin-top:12px;justify-content:flex-end">
+          <button type="submit" class="primary">Log in</button>
+          <a href="#create" id="openCreate" style="align-self:center;color:var(--accent-500);text-decoration:none">Create company</a>
+        </div>
+      </form>
+      <div id="homeMsg" style="margin-top:10px;color:var(--danger);display:none"></div>
+      <p style="margin-top:12px;color:var(--muted);font-size:.9rem">If you don't have an account, use <strong>"Create company"</strong> to register an owner.</p>
+    </aside>
+  </main>
+
+  <script>
+    (function(){
+      const API_BASE = 'http://localhost:3000';
+      const API_TOKEN_KEY = 'schedule_api_token';
+      const form = document.getElementById('homeLogin');
+      const msg = document.getElementById('homeMsg');
+      form.addEventListener('submit', async function(e){
+        e.preventDefault(); msg.style.display='none';
+        const u = document.getElementById('homeUser').value.trim();
+        const p = document.getElementById('homePass').value;
+        if(!u||!p) return;
+        try{
+          const res = await fetch(API_BASE + '/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ username: u, password: p }) });
+          if(!res.ok){ const err = await res.json().catch(()=>({error:'Login failed'})); msg.textContent = err.error || 'Login failed'; msg.style.display='block'; return; }
+          const data = await res.json(); localStorage.setItem(API_TOKEN_KEY, data.token); // redirect to app
+          window.location.href = '/app';
+        }catch(err){
+          msg.textContent = 'Server unreachable — try local login or run server.'; msg.style.display='block';
+        }
+      });
+      // open create company -> redirect to /app then open modal using URL hash
+      document.getElementById('openCreate').addEventListener('click', (e)=>{ e.preventDefault(); window.location.href='/app#company'; });
+    })();
+  </script>
+</body>
+</html>
